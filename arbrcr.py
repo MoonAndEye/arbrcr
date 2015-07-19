@@ -5,11 +5,10 @@ Created on Mon Jul 20 01:04:44 2015
 @author: Moon
 """
 
-import os, random, sys
+import os, sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from collections import OrderedDict
 import time
 
 start_time = time.time()
@@ -18,7 +17,7 @@ date_array = {}
 merge_base = ['code' , 'name', 'market']#這個放要合併基準
 # date_array[0] 就是最靠新資料的DataFrame
 # 如果要改計算天數，就改下面這個range的數字, 22是月
-date = 5 #在這邊設定天數
+date = 22 #在這邊設定天數
 
 file_path = 'C:/1save/jpStock/rawPython/' #檔案路徑的代號，這邊放歷史資料
 history_list = []
@@ -37,7 +36,7 @@ def sortDataFromNew (source_list, index):
     
 string = sortDataFromNew (history_list, 'd')
 
-
+string = sorted(string.values())
 def makeDailyPriceArray(file_path, date):
     """    
     程式的一開始 一定要放
