@@ -17,13 +17,14 @@ date_array = {}
 merge_base = ['code' , 'name', 'market']#這個放要合併基準
 # date_array[0] 就是最靠新資料的DataFrame
 # 如果要改計算天數，就改下面這個range的數字, 22是月
-date = 22 #在這邊設定天數
+cal_date = 10 #在這邊設定天數
 
 file_path = 'C:/1save/jpStock/rawPython/' #檔案路徑的代號，這邊放歷史資料
 history_list = []
 for name in os.listdir(file_path):
     history_list.append(name)
-    
+
+
 def sortDataFromNew (source_list, index):
     #source_list,是目標的list,第二個是存放目標的diction名字,第三個是裡面的code
     history_number = int(len(source_list)) - 1   
@@ -35,22 +36,23 @@ def sortDataFromNew (source_list, index):
     return def_diction
     
 string = sortDataFromNew (history_list, 'd')
+#print (string['d0'])
 
-string = sorted(string.values())
+#string = sorted(string.values())
 def makeDailyPriceArray(file_path, date):
-    """    
-    程式的一開始 一定要放
-    import pandas as pd 
-    不然會執行不了
+      
+    #程式的一開始 一定要放
+    #import pandas as pd 
+    #不然會執行不了
     
-    而且前面要先用 sortDateFromNew 先處理過歷史資料
+    #而且前面要先用 sortDateFromNew 先處理過歷史資料
     # !!! You must import pandas as pd first
-    file_path => 放的是歷史資料
-    date      => 只要輸入數字, 0 表示最新的資料; 1 表示 前1天; 2表示前 2天
-    """    
+    #file_path => 放的是歷史資料
+    #date      => 只要輸入數字, 0 表示最新的資料; 1 表示 前1天; 2表示前 2天
+    
     
     file_path = str(file_path)
-    date = str(date)
+    #date = str(date)
     #array_name = str(array_name)
     
     sort_index = 'd' + str(date)
@@ -76,7 +78,7 @@ def makeDailyPriceArray(file_path, date):
     #print (array_name)
 
 
-for i in range (date):
+for i in range (int(cal_date)-1):
     date_array[i] = makeDailyPriceArray(file_path, i) 
     #這個i不能把他當成string
     if i == 0:
@@ -85,6 +87,8 @@ for i in range (date):
         merge_array = pd.merge (date_array[0], date_array[1], on = merge_base)
     else :
         merge_array = pd.merge (merge_array, date_array[i], on = merge_base)
+
+"""
 for i in range(date):
     stop_index = date -1
     merge_array ['d' + str(i) + '_range'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(i) + '_end']
@@ -93,5 +97,5 @@ for i in range(date):
         next_date = i + 1
         merge_array ['d' + str(i) + '_slope'] = (merge_array['d' + str(i) + '_end'] - merge_array['d' + str(next_date) + '_end']) / merge_array ['average']
 
-
+"""
 print("Run time --- %s seconds ---" % (time.time() - start_time))
