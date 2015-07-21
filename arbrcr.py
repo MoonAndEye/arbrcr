@@ -57,7 +57,7 @@ def makeDailyPriceArray(file_path, date):
     
     sort_index = 'd' + str(date)
     
-    csv_columns = ['code','market','name','industry','start','high','low','end','volumn','daily_money']
+    csv_columns = ['code','market','name','industry','open','high','low','close','volumn','daily_money']
     
     pre_array =pd.read_csv(file_path + string[sort_index], encoding = 'utf-8')
     pre_array.columns = csv_columns    
@@ -65,12 +65,12 @@ def makeDailyPriceArray(file_path, date):
        
     pre_array = pre_array[pre_array.volumn != 0] #然後在array裡面去掉vol = 0
     #pre_array.index = pre_array['code'] #把index設定成code之後才好合併
-    pre_array['start'] = pre_array['start'].astype(float)
+    pre_array['open'] = pre_array['open'].astype(float)
     pre_array['high'] = pre_array['high'].astype(float)
     pre_array['low'] = pre_array['low'].astype(float)
-    pre_array['end'] = pre_array['end'].astype(float)
+    pre_array['close'] = pre_array['close'].astype(float)
     pre_array = pre_array.drop(['industry', 'volumn', 'daily_money'], axis = 1) 
-    pre_array = pre_array.rename(columns = {'start' : 'd' + str(date) + '_start','high' : 'd' + str(date) +  '_high', 'low': 'd' + str(date) +  '_low', 'end' : 'd' + str(date) +  '_end'})
+    pre_array = pre_array.rename(columns = {'open' : 'd' + str(date) + '_open','high' : 'd' + str(date) +  '_high', 'low': 'd' + str(date) +  '_low', 'close' : 'd' + str(date) +  '_close'})
        
     #array_index = sort_index + '_array'
     #print (array_index)
@@ -88,14 +88,18 @@ for i in range (int(cal_date)-1):
     else :
         merge_array = pd.merge (merge_array, date_array[i], on = merge_base)
 
+for i in range(int(cal_date)-1):
+    merge_array['d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(i) + '_open']
+    merge_array['d' + str(i) + '_diff_l'] = merge_array['d' + str(i) + '_open'] - merge_array['d' + str(i) + '_open']
+    
 """
 for i in range(date):
     stop_index = date -1
-    merge_array ['d' + str(i) + '_range'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(i) + '_end']
-    merge_array ['d' + str(i) + '_indicate'] = merge_array['d' + str(i) + '_high'] + merge_array['d' + str(i) + '_end']
+    merge_array ['d' + str(i) + '_range'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(i) + '_close']
+    merge_array ['d' + str(i) + '_indicate'] = merge_array['d' + str(i) + '_high'] + merge_array['d' + str(i) + '_close']
     if i != stop_index:
         next_date = i + 1
-        merge_array ['d' + str(i) + '_slope'] = (merge_array['d' + str(i) + '_end'] - merge_array['d' + str(next_date) + '_end']) / merge_array ['average']
+        merge_array ['d' + str(i) + '_slope'] = (merge_array['d' + str(i) + '_close'] - merge_array['d' + str(next_date) + '_close']) / merge_array ['average']
 
 """
 print("Run time --- %s seconds ---" % (time.time() - start_time))
