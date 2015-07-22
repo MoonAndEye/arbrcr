@@ -41,7 +41,7 @@ string = sortDataFromNew (history_list, 'd')
 #string = sorted(string.values())
 #pre_array =pd.read_csv(file_path + string['d0'], encoding = 'utf-8')
 
-print (pre_array[:5])
+#print (pre_array[:5])
 def makeDailyPriceArray(file_path, date):
       
     #程式的一開始 一定要放
@@ -94,9 +94,30 @@ for i in range (int(cal_date)-1):
 
 
 for i in range(int(cal_date)-1):
+    #merge_array_h = merge_array.loc[:,'code']
+    #merge_array_l = merge_array_h
     merge_array['d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(i) + '_open']
+    #merge_array_h['d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_diff_h']    
     merge_array['d' + str(i) + '_diff_l'] = merge_array['d' + str(i) + '_open'] - merge_array['d' + str(i) + '_open']
 
+group_col_h = []
+group_col_l = []
+for i in range(int(cal_date)-1):
+    h_index = 'd' + str(i) + '_diff_h'
+    group_col_h.append(h_index)
+    l_index = 'd' + str(i) + '_diff_l'
+    group_col_l.append(h_index)
+
+
+merge_array['ar_h'] = merge_array[group_col_h].sum(axis = 1)
+merge_array['ar_l'] = merge_array[group_col_l].sum(axis = 1)
+merge_array['ar_h'] = merge_array['ar_h'].astype(float)
+merge_array['ar_l'] = merge_array['ar_l'].astype(float)
+merge_array['ar'] = merge_array['ar_h'] /merge_array['ar_l']
+merge_array.sort('ar')
+#print (group_col_h)
+
+"""
 merge_array_h = merge_array.loc [:,'code', 'd0_diff_h':'d' + str(int(cal_date)-2) + '_diff_h']
 merge_array_h['sum_h'] = merge_array_h.sum(axis = 1)
 
@@ -106,11 +127,11 @@ merge_array_l['sum_l'] = merge_array_l.sum(axis = 1)
 merge_array['sum_h'] = merge_array_h['sum_h']
 merge_array['sum_l'] = merge_array_l['sum_l']
 merge_array['ar'] = merge_array['sum_h'] / merge_array['sum_l']
+"""
 
-
-result_array = merge_array.loc [:50, 'code', 'market', 'name', 'ar']
-only1_array = merge_array[merge_array['market'].str.contains("1")]
-print (result_array[10:])
+#result_array = merge_array.loc [:50, 'code', 'market', 'name', 'ar']
+#only1_array = merge_array[merge_array['market'].str.contains("1")]
+#print (result_array[10:])
 
 
 
