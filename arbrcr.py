@@ -39,6 +39,9 @@ string = sortDataFromNew (history_list, 'd')
 #print (string['d0'])
 
 #string = sorted(string.values())
+#pre_array =pd.read_csv(file_path + string['d0'], encoding = 'utf-8')
+
+print (pre_array[:5])
 def makeDailyPriceArray(file_path, date):
       
     #程式的一開始 一定要放
@@ -59,7 +62,7 @@ def makeDailyPriceArray(file_path, date):
     
     csv_columns = ['code','market','name','industry','open','high','low','close','volumn','daily_money']
     
-    pre_array =pd.read_csv(file_path + string[sort_index], encoding = 'utf-8')
+    pre_array =pd.read_csv(file_path + string[sort_index], skiprows = 1,encoding = 'utf-8')
     pre_array.columns = csv_columns    
     pre_array['volumn'] = pre_array['volumn'].astype(int) #先把vol換成int
        
@@ -76,6 +79,7 @@ def makeDailyPriceArray(file_path, date):
     #print (array_index)
     return pre_array
     #print (array_name)
+#date_array[0] = makeDailyPriceArray(file_path, 0)
 
 
 for i in range (int(cal_date)-1):
@@ -88,22 +92,24 @@ for i in range (int(cal_date)-1):
     else :
         merge_array = pd.merge (merge_array, date_array[i], on = merge_base)
 
+
 for i in range(int(cal_date)-1):
     merge_array['d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(i) + '_open']
     merge_array['d' + str(i) + '_diff_l'] = merge_array['d' + str(i) + '_open'] - merge_array['d' + str(i) + '_open']
 
-merge_array_h = merge_array.loc [:, 'd0_diff_h':'d' + str(int(cal_date)-2) + '_diff_h']
+merge_array_h = merge_array.loc [:,'code', 'd0_diff_h':'d' + str(int(cal_date)-2) + '_diff_h']
 merge_array_h['sum_h'] = merge_array_h.sum(axis = 1)
 
-merge_array_l = merge_array.loc [:,'d0_diff_l': 'd' + str(int(cal_date)-2) + '_diff_l']
+merge_array_l = merge_array.loc [:,'code', 'd0_diff_l': 'd' + str(int(cal_date)-2) + '_diff_l']
 merge_array_l['sum_l'] = merge_array_l.sum(axis = 1)
 
 merge_array['sum_h'] = merge_array_h['sum_h']
 merge_array['sum_l'] = merge_array_l['sum_l']
 merge_array['ar'] = merge_array['sum_h'] / merge_array['sum_l']
 
-result_array = merge_array.loc [:, 'code', 'market', 'name', 'ar']
 
+result_array = merge_array.loc [:50, 'code', 'market', 'name', 'ar']
+only1_array = merge_array[merge_array['market'].str.contains("1")]
 print (result_array[10:])
 
 
