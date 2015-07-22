@@ -91,7 +91,23 @@ for i in range (int(cal_date)-1):
 for i in range(int(cal_date)-1):
     merge_array['d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(i) + '_open']
     merge_array['d' + str(i) + '_diff_l'] = merge_array['d' + str(i) + '_open'] - merge_array['d' + str(i) + '_open']
-    
+
+merge_array_h = merge_array.loc [:, 'd0_diff_h':'d' + str(int(cal_date)-2) + '_diff_h']
+merge_array_h['sum_h'] = merge_array_h.sum(axis = 1)
+
+merge_array_l = merge_array.loc [:,'d0_diff_l': 'd' + str(int(cal_date)-2) + '_diff_l']
+merge_array_l['sum_l'] = merge_array_l.sum(axis = 1)
+
+merge_array['sum_h'] = merge_array_h['sum_h']
+merge_array['sum_l'] = merge_array_l['sum_l']
+merge_array['ar'] = merge_array['sum_h'] / merge_array['sum_l']
+
+result_array = merge_array.loc [:, 'code', 'market', 'name', 'ar']
+
+print (result_array[10:])
+
+
+
 """
 for i in range(date):
     stop_index = date -1
