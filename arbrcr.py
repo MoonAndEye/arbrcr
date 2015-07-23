@@ -98,7 +98,11 @@ for i in range(int(cal_date)-1):
     #merge_array_l = merge_array_h
     merge_array['d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(i) + '_open']
     #merge_array_h['d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_diff_h']    
+    
+for i in range(int(cal_date)-1): 
     merge_array['d' + str(i) + '_diff_l'] = merge_array['d' + str(i) + '_open'] - merge_array['d' + str(i) + '_low']
+
+
 
 group_col_h = []
 group_col_l = []
@@ -114,6 +118,7 @@ merge_array['ar_h'] = merge_array[['d1_diff_h', 'd2_diff_h', 'd3_diff_h', 'd4_di
 merge_array['ar_l'] = merge_array[['d1_diff_l', 'd2_diff_l', 'd3_diff_l', 'd4_diff_l', 'd5_diff_l', 'd6_diff_l', 'd7_diff_l', 'd8_diff_l']].sum(axis = 1)
 merge_array['ar_h'] = merge_array['ar_h'].astype(float)
 merge_array['ar_l'] = merge_array['ar_l'].astype(float)
+merge_array = merge_array[merge_array['ar_l'] != 0]
 merge_array['ar'] = merge_array['ar_h'] /merge_array['ar_l']
 only1_array = merge_array[merge_array['market'].str.contains("1")]
 merge_array = merge_array.sort(columns = 'ar', axis = 0, ascending=[False])
