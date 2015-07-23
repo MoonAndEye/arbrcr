@@ -113,7 +113,7 @@ for i in range(int(cal_date)-1):
     l_index = 'd' + str(i) + '_diff_l'
     group_col_l.append(h_index)
 
-
+"""
 merge_array['ar_h'] = merge_array[['d1_diff_h', 'd2_diff_h', 'd3_diff_h', 'd4_diff_h', 'd5_diff_h', 'd6_diff_h', 'd7_diff_h', 'd8_diff_h']].sum(axis = 1)
 merge_array['ar_l'] = merge_array[['d1_diff_l', 'd2_diff_l', 'd3_diff_l', 'd4_diff_l', 'd5_diff_l', 'd6_diff_l', 'd7_diff_l', 'd8_diff_l']].sum(axis = 1)
 merge_array['ar_h'] = merge_array['ar_h'].astype(float)
@@ -121,12 +121,12 @@ merge_array['ar_l'] = merge_array['ar_l'].astype(float)
 merge_array = merge_array[merge_array['ar_l'] != 0]
 merge_array['ar'] = merge_array['ar_h'] /merge_array['ar_l']
 only1_array = merge_array[merge_array['market'].str.contains("1")]
-"""
+
 merge_array = merge_array.sort(columns = 'ar', axis = 0, ascending=[False])
 only1_array = only1_array.sort(columns = 'ar', axis = 0, ascending=[False])
 """
 merge_array = merge_array.set_index('code') #之後要改
-only1_array = only1_array.set_index('code') #之後要改
+#only1_array = only1_array.set_index('code') #之後要改
 
 #df1.sort(['a', 'b'], ascending=[True, False])
 #data2 = data.set_index('a')
@@ -143,8 +143,20 @@ merge_array['ar'] = merge_array['sum_h'] / merge_array['sum_l']
 """
 
 ar_array_h = merge_array.ix[:, 'd0_diff_h':'d' + str(int(cal_date)-2) + '_diff_h']
+ar_array_h['sum_h'] = ar_array_h.sum(axis=1)
 
 ar_array_l = merge_array.ix[:, 'd0_diff_l':'d' + str(int(cal_date)-2) + '_diff_l']
+ar_array_l['sum_l'] = ar_array_l.sum(axis=1)
+
+merge_array['sum_h'] = ar_array_h['sum_h'].astype(float)
+merge_array['sum_l'] = ar_array_l['sum_l'].astype(float)
+merge_array = merge_array[merge_array['sum_l'] != 0]
+merge_array['ar'] = merge_array['sum_h'] /merge_array['sum_l']
+
+only1_array = merge_array[merge_array['market'].str.contains("1")]
+
+merge_array = merge_array.sort(columns = 'ar', axis = 0, ascending=[False])
+only1_array = only1_array.sort(columns = 'ar', axis = 0, ascending=[False])
 #result_array = merge_array.loc [:50, 'code', 'market', 'name', 'ar']
 #only1_array = merge_array[merge_array['market'].str.contains("1")]
 #print (result_array[10:])
