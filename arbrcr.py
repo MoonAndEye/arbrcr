@@ -121,8 +121,10 @@ merge_array['ar_l'] = merge_array['ar_l'].astype(float)
 merge_array = merge_array[merge_array['ar_l'] != 0]
 merge_array['ar'] = merge_array['ar_h'] /merge_array['ar_l']
 only1_array = merge_array[merge_array['market'].str.contains("1")]
+"""
 merge_array = merge_array.sort(columns = 'ar', axis = 0, ascending=[False])
 only1_array = only1_array.sort(columns = 'ar', axis = 0, ascending=[False])
+"""
 merge_array = merge_array.set_index('code') #之後要改
 only1_array = only1_array.set_index('code') #之後要改
 
@@ -140,6 +142,9 @@ merge_array['sum_l'] = merge_array_l['sum_l']
 merge_array['ar'] = merge_array['sum_h'] / merge_array['sum_l']
 """
 
+ar_array_h = merge_array.ix[:, 'd0_diff_h':'d' + str(int(cal_date)-2) + '_diff_h']
+
+ar_array_l = merge_array.ix[:, 'd0_diff_l':'d' + str(int(cal_date)-2) + '_diff_l']
 #result_array = merge_array.loc [:50, 'code', 'market', 'name', 'ar']
 #only1_array = merge_array[merge_array['market'].str.contains("1")]
 #print (result_array[10:])
