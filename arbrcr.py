@@ -166,6 +166,40 @@ for i in range(int(cal_date) - 2):
 for i in range(int(cal_date) - 2):
     merge_array['br_d' + str(i) + '_diff_l'] = merge_array['d' + str(int(i) + 1) + '_close'] - merge_array['d' + str(i) + '_low']
 
+br_array_h = merge_array.ix[:, 'br_d0_diff_h':'br_d' + str(int(cal_date)-3) + '_diff_h']
+br_array_h['br_aum_h'] = ar_array_h.sum(axis=1)
+
+br_array_l = merge_array.ix[:, 'br_d0_diff_l':'br_d' + str(int(cal_date)-3) + '_diff_l']
+br_array_l['br_aum_l'] = br_array_l.sum(axis=1)
+
+merge_array['br_aum_h'] = br_array_h['br_aum_h'].astype(float)
+merge_array['br_aum_l'] = br_array_l['br_aum_l'].astype(float)
+merge_array = merge_array[merge_array['br_aum_l'] != 0]
+merge_array['br'] = merge_array['br_aum_h'] /merge_array['br_aum_l']
+
+"""
+#以下是cr
+"""
+for i in range(int(cal_date) - 2):
+    merge_array['cr_d' + str(i) + 'base'] = (merge_array['d' + str(int(i) + 1) + '_close'] + merge_array['d' + str(int(i) + 1) + '_high'] + merge_array['d' + str(int(i) + 1) + '_low']) / 3
+
+for i in range(int(cal_date) - 2):
+    merge_array['cr_d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_high'] - merge_array['cr_d' + str(i) + 'base']
+
+for i in range(int(cal_date) - 2):
+    merge_array['cr_d' + str(i) + '_diff_l'] = merge_array['cr_d' + str(i) + 'base'] - merge_array['d' + str(i) + '_low']
+
+cr_array_h = merge_array.ix[:, 'cr_d0_diff_h':'cr_d' + str(int(cal_date)-3) + '_diff_h']
+cr_array_h['cr_aum_h'] = ar_array_h.sum(axis=1)
+
+cr_array_l = merge_array.ix[:, 'cr_d0_diff_l':'cr_d' + str(int(cal_date)-3) + '_diff_l']
+cr_array_l['cr_aum_l'] = cr_array_l.sum(axis=1)
+
+merge_array['cr_aum_h'] = cr_array_h['cr_aum_h'].astype(float)
+merge_array['cr_aum_l'] = cr_array_l['cr_aum_l'].astype(float)
+merge_array = merge_array[merge_array['cr_aum_l'] != 0]
+merge_array['cr'] = merge_array['cr_aum_h'] /merge_array['cr_aum_l']
+
 
 only1_array = merge_array[merge_array['market'].str.contains("1")]
 
