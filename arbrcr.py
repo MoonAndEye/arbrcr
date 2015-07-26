@@ -202,6 +202,7 @@ merge_array['cr'] = merge_array['cr_aum_h'] /merge_array['cr_aum_l']
 
 
 only1_array = merge_array[merge_array['market'].str.contains("1")]
+only1_array = only1_array.ix[:, ['name', 'ar', 'br', 'cr',]]
 
 merge_array = merge_array.sort(columns = 'ar', axis = 0, ascending=[False])
 only1_array = only1_array.sort(columns = 'ar', axis = 0, ascending=[False])
