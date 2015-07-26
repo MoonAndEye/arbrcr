@@ -92,15 +92,18 @@ for i in range (int(cal_date)-1):
     else :
         merge_array = pd.merge (merge_array, date_array[i], on = merge_base)
 
+"""
+#以下是ar
+"""
 
 for i in range(int(cal_date)-1):
     #merge_array_h = merge_array.loc[:,'code']
     #merge_array_l = merge_array_h
-    merge_array['d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(i) + '_open']
+    merge_array['ar_d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(i) + '_open']
     #merge_array_h['d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_diff_h']    
     
 for i in range(int(cal_date)-1): 
-    merge_array['d' + str(i) + '_diff_l'] = merge_array['d' + str(i) + '_open'] - merge_array['d' + str(i) + '_low']
+    merge_array['ar_d' + str(i) + '_diff_l'] = merge_array['d' + str(i) + '_open'] - merge_array['d' + str(i) + '_low']
 
 
 
@@ -132,26 +135,37 @@ merge_array = merge_array.set_index('code') #之後要改
 #data2 = data.set_index('a')
 """
 merge_array_h = merge_array.loc [:,'code', 'd0_diff_h':'d' + str(int(cal_date)-2) + '_diff_h']
-merge_array_h['sum_h'] = merge_array_h.sum(axis = 1)
+merge_array_h['ar_aum_h'] = merge_array_h.sum(axis = 1)
 
 merge_array_l = merge_array.loc [:,'code', 'd0_diff_l': 'd' + str(int(cal_date)-2) + '_diff_l']
-merge_array_l['sum_l'] = merge_array_l.sum(axis = 1)
+merge_array_l['ar_aum_l'] = merge_array_l.sum(axis = 1)
 
-merge_array['sum_h'] = merge_array_h['sum_h']
-merge_array['sum_l'] = merge_array_l['sum_l']
-merge_array['ar'] = merge_array['sum_h'] / merge_array['sum_l']
+merge_array['ar_aum_h'] = merge_array_h['ar_aum_h']
+merge_array['ar_aum_l'] = merge_array_l['ar_aum_l']
+merge_array['ar'] = merge_array['ar_aum_h'] / merge_array['ar_aum_l']
 """
 
-ar_array_h = merge_array.ix[:, 'd0_diff_h':'d' + str(int(cal_date)-2) + '_diff_h']
-ar_array_h['sum_h'] = ar_array_h.sum(axis=1)
+ar_array_h = merge_array.ix[:, 'ar_d0_diff_h':'ar_d' + str(int(cal_date)-2) + '_diff_h']
+ar_array_h['ar_aum_h'] = ar_array_h.sum(axis=1)
 
-ar_array_l = merge_array.ix[:, 'd0_diff_l':'d' + str(int(cal_date)-2) + '_diff_l']
-ar_array_l['sum_l'] = ar_array_l.sum(axis=1)
+ar_array_l = merge_array.ix[:, 'ar_d0_diff_l':'ar_d' + str(int(cal_date)-2) + '_diff_l']
+ar_array_l['ar_aum_l'] = ar_array_l.sum(axis=1)
 
-merge_array['sum_h'] = ar_array_h['sum_h'].astype(float)
-merge_array['sum_l'] = ar_array_l['sum_l'].astype(float)
-merge_array = merge_array[merge_array['sum_l'] != 0]
-merge_array['ar'] = merge_array['sum_h'] /merge_array['sum_l']
+merge_array['ar_aum_h'] = ar_array_h['ar_aum_h'].astype(float)
+merge_array['ar_aum_l'] = ar_array_l['ar_aum_l'].astype(float)
+merge_array = merge_array[merge_array['ar_aum_l'] != 0]
+merge_array['ar'] = merge_array['ar_aum_h'] /merge_array['ar_aum_l']
+
+"""
+# 以下是br
+"""
+
+for i in range(int(cal_date) - 2):
+    merge_array['br_d' + str(i) + '_diff_h'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(int(i) + 1) + '_close']
+
+for i in range(int(cal_date) - 2):
+    merge_array['br_d' + str(i) + '_diff_l'] = merge_array['d' + str(int(i) + 1) + '_close'] - merge_array['d' + str(i) + '_low']
+
 
 only1_array = merge_array[merge_array['market'].str.contains("1")]
 
@@ -163,14 +177,5 @@ only1_array = only1_array.sort(columns = 'ar', axis = 0, ascending=[False])
 
 
 
-"""
-for i in range(date):
-    stop_index = date -1
-    merge_array ['d' + str(i) + '_range'] = merge_array['d' + str(i) + '_high'] - merge_array['d' + str(i) + '_close']
-    merge_array ['d' + str(i) + '_indicate'] = merge_array['d' + str(i) + '_high'] + merge_array['d' + str(i) + '_close']
-    if i != stop_index:
-        next_date = i + 1
-        merge_array ['d' + str(i) + '_slope'] = (merge_array['d' + str(i) + '_close'] - merge_array['d' + str(next_date) + '_close']) / merge_array ['average']
 
-"""
 print("Run time --- %s seconds ---" % (time.time() - start_time))
