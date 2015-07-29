@@ -17,7 +17,9 @@ date_array = {}
 merge_base = ['code' , 'name', 'market']#這個放要合併基準
 # date_array[0] 就是最靠新資料的DataFrame
 # 如果要改計算天數，就改下面這個range的數字, 22是月
-cal_date = 10 #在這邊設定天數
+cal_date = 12 #在這邊設定天數
+writein_path = 'C:/1save/jpStock/arbrcr/arbrcr.csv'
+
 
 file_path = 'C:/1save/jpStock/rawPython/' #檔案路徑的代號，這邊放歷史資料
 history_list = []
@@ -210,7 +212,15 @@ only1_array = only1_array.sort(columns = 'ar', axis = 0, ascending=[False])
 #only1_array = merge_array[merge_array['market'].str.contains("1")]
 #print (result_array[10:])
 
+ar = only1_array['ar'].mean()
+br = only1_array['br'].mean()
+cr = only1_array['cr'].mean()
 
+result = str(cal_date) + ',' + str(ar)  + ',' + str(br) + ',' + str(cr) + '\n'
+print (result)
 
+f = open (writein_path, 'a')
+f.write(result)
+f.close()
 
 print("Run time --- %s seconds ---" % (time.time() - start_time))
