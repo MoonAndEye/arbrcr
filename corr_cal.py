@@ -12,11 +12,19 @@ import time
 
 start_time = time.time()
 
-start_date = 'd'+ str(0) #i 裡面放數字,如果是d0,就是今天,d1就是前一天  
-
-cal_date = str(10)  #放的是結束時間,現在不確定要放什麼,可能放數字比較好,舉例來說,從d0算到D20
 """
-accu_duration = int(j) #放累加的時間, ar br cr 都有一個累加時間,但最短是5天,不然計算誤差超大
+index zone
+"""
+index_start = 0
+index_cal_date = 5
+index_accu_duration = 5
+
+start_date = 'd'+ str(index_start) #i 裡面放數字,如果是d0,就是今天,d1就是前一天  
+
+cal_date = str(int(index_cal_date))  #放的是結束時間,現在不確定要放什麼,可能放數字比較好,舉例來說,從d0算到D20
+
+accu_duration = str(int(index_start + index_cal_date + index_accu_duration) - 1) #放累加的時間, ar br cr 都有一個累加時間,但最短是5天,不然計算誤差超大
+"""
 cal_target = '' #放股票代碼前四碼,只放數字
 """
 source_path = 'C:/1save/jpStock/rawPython/' #歷史資料的路徑
@@ -59,7 +67,7 @@ def makeDailyPriceArray(file_path, date):
     
     csv_columns = ['code','market','name','industry','open','high','low','close','volumn','daily_money']
     
-    pre_array =pd.read_csv(file_path + string[sort_index], skiprows = 1,encoding = 'utf-8')
+    pre_array =pd.read_csv(file_path + date_dic[sort_index] + '.csv', skiprows = 1,encoding = 'utf-8')
     pre_array.columns = csv_columns    
     pre_array['volumn'] = pre_array['volumn'].astype(int) #先把vol換成int
        
@@ -70,11 +78,15 @@ def makeDailyPriceArray(file_path, date):
     pre_array['low'] = pre_array['low'].astype(float)
     pre_array['close'] = pre_array['close'].astype(float)
     pre_array = pre_array.drop(['industry', 'volumn', 'daily_money'], axis = 1) 
-    pre_array = pre_array.rename(columns = {'open' : 'd' + str(date) + '_open','high' : 'd' + str(date) +  '_high', 'low': 'd' + str(date) +  '_low', 'close' : 'd' + str(date) +  '_close'})
+    #pre_array = pre_array.rename(columns = {'open' : 'd' + str(date) + '_open','high' : 'd' + str(date) +  '_high', 'low': 'd' + str(date) +  '_low', 'close' : 'd' + str(date) +  '_close'})
        
     #array_index = sort_index + '_array'
     #print (array_index)
     return pre_array
     #print (array_name)
+raw_array = {}
+
+for i in range (int(accu_duration)):
+    raw_array['d' + str(i)] = makeDailyPriceArray(source_path, i) 
 
 print("Run time --- %s seconds ---" % (time.time() - start_time))
